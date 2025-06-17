@@ -109,6 +109,9 @@
         <configuration>
           <doctitle>Documentación API - Laboratorio III-2025</doctitle>
           <windowtitle>Laboratorio III</windowtitle>
+          <show>private</show>
+          <doclint>none</doclint>
+          <source>17</source> <!-- o 11/8 según tu proyecto -->
           <charset>UTF-8</charset>
           <encoding>UTF-8</encoding>
         </configuration>

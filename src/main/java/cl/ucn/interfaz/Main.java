@@ -9,13 +9,38 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Clase principal que contiene la interfaz de línea de comandos para gestionar clientes,
+ * aplicar descuentos y visualizar logs. Usa JPA para interactuar con la base de datos.
+ */
 public class Main {
 
+    /**
+     * Scanner para lectura de entrada desde consola.
+     */
     private static final Scanner scanner = new Scanner(System.in);
+
+    /**
+     * Fábrica de EntityManager para la unidad de persistencia "shopping".
+     */
     private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("shopping");
+
+    /**
+     * EntityManager para operaciones sobre entidades.
+     */
     private static EntityManager em = emf.createEntityManager();
+
+    /**
+     * Motor de cálculo de descuentos para clientes.
+     */
     private static LoyaltyDiscountEngine discountEngine = new LoyaltyDiscountEngine(em);
 
+    /**
+     * Punto de entrada del programa. Muestra un menú iterativo para gestionar clientes,
+     * aplicar descuentos, actualizar datos y visualizar logs.
+     *
+     * @param args argumentos de línea de comandos (no utilizados).
+     */
     public static void main(String[] args) {
         System.out.println("=== SISTEMA DE CLIENTES Y DESCUENTOS ===");
         int opcion;
@@ -38,6 +63,9 @@ public class Main {
         emf.close();
     }
 
+    /**
+     * Muestra el menú principal de opciones al usuario.
+     */
     private static void mostrarMenu() {
         System.out.println("""
                 
@@ -52,6 +80,9 @@ public class Main {
                 Seleccione una opción:""");
     }
 
+    /**
+     * Crea un nuevo cliente a partir de los datos ingresados por el usuario y lo guarda en la base de datos.
+     */
     private static void crearCliente() {
         System.out.print("ID del cliente: ");
         String id = scanner.nextLine();
@@ -72,6 +103,9 @@ public class Main {
         System.out.println("✅ Cliente creado.");
     }
 
+    /**
+     * Muestra en pantalla todos los clientes almacenados en la base de datos.
+     */
     private static void listarClientes() {
         List<Customer> clientes = em.createQuery("SELECT c FROM Customer c", Customer.class).getResultList();
         System.out.println("\n--- Lista de Clientes ---");
@@ -81,6 +115,9 @@ public class Main {
         }
     }
 
+    /**
+     * Aplica el motor de cálculo de descuentos a un cliente existente e imprime el resultado.
+     */
     private static void aplicarDescuento() {
         System.out.print("ID del cliente: ");
         String id = scanner.nextLine();
@@ -93,6 +130,9 @@ public class Main {
         }
     }
 
+    /**
+     * Lista en consola los logs de descuentos aplicados, ordenados del más reciente al más antiguo.
+     */
     private static void verLogs() {
         List<DiscountLog> logs = em.createQuery("SELECT l FROM DiscountLog l ORDER BY timestamp DESC", DiscountLog.class).getResultList();
         System.out.println("\n--- Logs de Descuentos ---");
@@ -102,6 +142,9 @@ public class Main {
         }
     }
 
+    /**
+     * Permite modificar el número de órdenes, el nivel de fidelidad o la promoción activa de un cliente.
+     */
     private static void actualizarCliente() {
         System.out.print("ID del cliente a actualizar: ");
         String id = scanner.nextLine();
@@ -126,6 +169,9 @@ public class Main {
         System.out.println("✅ Cliente actualizado.");
     }
 
+    /**
+     * Elimina un cliente existente de la base de datos según su ID.
+     */
     private static void eliminarCliente() {
         System.out.print("ID del cliente a eliminar: ");
         String id = scanner.nextLine();
