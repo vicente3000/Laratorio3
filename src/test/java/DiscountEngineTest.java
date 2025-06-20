@@ -1,4 +1,5 @@
 import cl.ucn.modelo.Customer;
+import cl.ucn.modelo.DiscountLog;
 import cl.ucn.modelo.LoyaltyDiscountEngine;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -8,10 +9,6 @@ import java.time.LocalDate;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
-
-
-
 
 public class DiscountEngineTest {
 
@@ -67,10 +64,16 @@ public class DiscountEngineTest {
     @Test
     public void testRegistroEnLogs() {
         Customer c = new Customer("test7", LocalDate.parse("2015-06-01"), 120, Customer.LoyaltyLevel.PLATINUM, true);
-        descuento.computeDiscount(c); // debería loguear
-        // Aquí podrías consultar la BD para verificar existencia del log
-        // o modificar el método para testear indirectamente
-        assertTrue(true); // Suponemos que pasa
+        double resultado = descuento.computeDiscount(c);
+
+        verify(entidad).persist(argThat(obj -> {
+            if (!(obj instanceof DiscountLog log)) return false;
+            return log.getCustomerId().equals("test7")
+                    && log.getDiscountApplied() == resultado;
+        }));
+
+        verify(tx).begin();
+        verify(tx).commit();
     }
 
     @Test
